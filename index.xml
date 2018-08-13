@@ -27,7 +27,7 @@ DEMO (enter any username and password - it is not checked)</description>
       <pubDate>Mon, 14 May 2018 17:05:08 +0100</pubDate>
       
       <guid>http://www.floe.it/docs/quick-start/</guid>
-      <description>Download or build from scratch floe executable, add a local config.yml
+      <description>Download or build from scratch a floe executable, and add a local config.yml
 Start a host processes:
 floe -tags=linux,go,couch -admin=123456 -host_name=h1 -pub_bind=127.0.0.1:8080
 These commands default to reading in the local config.yml
@@ -62,7 +62,7 @@ Node - A config item that can respond to and issue events. A Node is part of a f
       
       <guid>http://www.floe.it/docs/config/</guid>
       <description>Common Config All config has a Common section which has the following top level config items:
- hosts - []string - all other floe Hosts base-url - string - the api base url, in case hosting on a sub domain. config-path - string - is a path to the config which can be a path to a file in a git repo e.g. git@github.com:floeit/floe.git/build/FLOE.yaml store-type - string - define which type of store to use - memory, local, ec2 key-file - the private key to use with git.</description>
+ hosts - []string - All other floe Hosts base-url - string - The api base url, in case hosting on a sub domain. config-path - string - Is a path to the config which can be a path to a file in a git repo e.g. git@github.com:floeit/floe.git/build/FLOE.yaml store-type - string - Define which type of store to use - memory, local, ec2 git-key - string - The private key to use with git, if empty then the system installed key is used.</description>
     </item>
     
   </channel>

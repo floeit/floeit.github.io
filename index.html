@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb">
 <head>
-  <meta name="generator" content="Hugo 0.40.3" />
+  <meta name="generator" content="Hugo 0.45" />
 
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -81,7 +81,7 @@
     </div>
 
     <div class="version">
-            generated on May 16, 2018
+            generated on Aug 13, 2018
     </div>
 </div>
 <div class="content">
@@ -147,7 +147,7 @@
     <div class="content">
         
 
-<p>Download or build from scratch <code>floe</code> executable, add a local <code>config.yml</code></p>
+<p><a href="https://github.com/floeit/floe/releases">Download</a> or build from scratch a <code>floe</code> executable, and add a local <a href="http://www.floe.it/#example"><code>config.yml</code></a></p>
 
 <p>Start a host processes:</p>
 
@@ -245,12 +245,15 @@
 <p>All config has a Common section which has the following top level config items:</p>
 
 <ul>
-<li><code>hosts</code>       - []string - all other floe Hosts</li>
-<li><code>base-url</code>    - string - the api base url,  in case hosting on a sub domain.</li>
-<li><code>config-path</code> - string - is a path to the config which can be a path to a file in a git repo e.g. git@github.com:floeit/floe.git/build/FLOE.yaml</li>
-<li><code>store-type</code>  - string - define which type of store to use - memory, local, ec2</li>
-<li><code>key-file</code>    - the private key to use with git. e.g. &lsquo;git-key: &ldquo;/home/ubuntu/.ssh/id_floedemo_rsa&rdquo;&rsquo; if empty then the system installed key is used.</li>
+<li><code>hosts</code>       - []string - All other floe Hosts</li>
+<li><code>base-url</code>    - string - The api base url,  in case hosting on a sub domain.</li>
+<li><code>config-path</code> - string - Is a path to the config which can be a path to a file in a git repo e.g. git@github.com:floeit/floe.git/build/FLOE.yaml</li>
+<li><code>store-type</code>  - string - Define which type of store to use - memory, local, ec2</li>
+<li><code>git-key</code>     - string - The private key to use with git, if empty then the system installed key is used. e.g.</li>
 </ul>
+
+<pre><code>    git-key: &quot;/home/ubuntu/.ssh/id_floedemo_rsa&quot; 
+</code></pre>
 
 <h3 id="flow-config">Flow Config</h3>
 
@@ -284,8 +287,21 @@ Task fields that start <code>./</code> (and are not <code>./...</code>) will als
 <p>Triggers are the things that start a flow off there are a few types of trigger.</p>
 
 <ul>
-<li><code>data</code> - Where a web request pushing data to the server may trigger a flow - for example the web interface uses this, to explicitly launch a run.</li>
-<li><code>timer</code> - A flow can be triggered periodically - as a timer does not contain any repo version info this can only include git</li>
+<li><code>data</code>     - Where a web request pushing data to the server may trigger a flow - for example the web interface uses this, to explicitly launch a run.</li>
+<li><code>timer</code>    - A flow can be triggered periodically - as a timer does not contain any repo version info this can only include git</li>
+<li><code>poll-git</code> - A git repo will be polled for changes matching the parameters. One or more runs may be added to the pending queue.</li>
+</ul>
+
+<h3 id="trigger-types">Trigger Types</h3>
+
+<h4 id="data">data</h4>
+
+<p>Data triggers set up a http endpoint on the host that responds to a <code>POST</code> request on the <code>/data</code> url (e.g. <a href="http://localhost:8080/build/api/push/data">http://localhost:8080/build/api/push/data</a> )</p>
+
+<p>Options:</p>
+
+<ul>
+<li><code>cmd</code>     - Use this if you are running an executable that only depends on the</li>
 </ul>
 
 <h3 id="tasks">Tasks</h3>
@@ -295,7 +311,7 @@ Task fields that start <code>./</code> (and are not <code>./...</code>) will als
 <ul>
 <li><code>id</code>     - (string) A url friendly identity for this node, it has to be unique within a flow. If an id is not give then the name will be used to generate the ID.</li>
 <li><code>name</code>   - (string) A human friendly name to display in the web interface. If a name is not given then one will be generated from the id (either a <code>name</code> or <code>id</code> must be given).</li>
-<li><code>class</code>  - There are two task classes:<br />
+<li><code>class</code>  - There are only two task classes:<br />
 
 <ul>
 <li><code>task</code>  - A standard task does something - this is the default, and does not need to be in the config explicitly.</li>
@@ -346,11 +362,12 @@ Task fields that start <code>./</code> (and are not <code>./...</code>) will als
 <p>Options:</p>
 
 <ul>
-<li><code>cmd</code>     - Use this if you are running an executable that only depends on the binary</li>
-<li><code>shell</code>   - Use this if you are running something that requires the shell, e.g. bash scripts.</li>
-<li><code>args</code>    - An array of command line arguments - for simple arguments these can be included space delimited in the <code>cmd</code> or <code>shell</code> lines, if there are quote enclosed arguments then use this args array.</li>
+<li><code>cmd</code>     - Use this if you are running an executable that only depends on the binary, and does not use shell expansions in the args like &lsquo;*&lsquo;, &lsquo;.&rsquo; etc.</li>
+<li><code>shell</code>   - Use this if you are running something that requires the shell, e.g. bash scripts, or other sell extensions like &lsquo;*&lsquo;, &lsquo;.&rsquo; etc. This version is generally more forgiving than &lsquo;cmd&rsquo;.</li>
+<li><code>args</code>    - An array of command line arguments - for simple arguments these can be included space delimited in the <code>cmd</code> or <code>shell</code> lines, if there are quote enclosed arguments then use this args array for them.</li>
 <li><code>sub-dir</code> - The sub directory (relative to the run workspace) to execute the command in.</li>
 <li><code>env</code>     - ([]string) - In the form of key=value environment variable to be set in the context of the command being executed.</li>
+<li><code>git-key</code> - (string) - the path to a private key to use with this command. If you are mutating a remote repo (that is not the repo already used) using the command <code>git</code> then you probably want to include a specific key here (in Github a per repo deploy key may be in order.) This will override the common config git-key, and will be the setting used for all subsequent nodes, until the next occurrence of .</li>
 </ul>
 
 <h4 id="fetch">fetch</h4>
@@ -363,7 +380,7 @@ Task fields that start <code>./</code> (and are not <code>./...</code>) will als
 <li><code>url</code>           - The URL to get the file from.</li>
 <li><code>checksum</code>      - The checksum to validate the file.</li>
 <li><code>checksum-algo</code> - What algorithm to use to compute the checksum <code>sha256</code>, <code>sha1</code> or <code>md5</code> are supported.</li>
-<li><code>location</code>      - Where to link the file once downloaded - can use <code>{{ws}}</code> substitution. Relative paths will be relative to the workspace folder for the run. If no location is given it will be linked to the root of the workspace. If the location ends in <code>/</code> (or <code>\</code> on some systems) then the file will be named as the download name, but moved to the location specified.</li>
+<li><code>location</code>      - Where to link the file once downloaded - can use <code>{{ws}}</code> substitution. Relative paths will be relative to the workspace folder for the run in any case. If no location is given it will be linked to the root of the workspace. If the location ends in <code>/</code> (or <code>\</code> on some systems) then the file will be named as the download name, but linked to the location specified.</li>
 </ul>
 
 <h2 id="example">Example</h2>
